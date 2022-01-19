@@ -16,7 +16,7 @@ Digite um cnpj (pode ter pontos ou traços) e clique em Consulta. Vai aparecer o
 
 ## Pré-requisitos:
 Python 3.8;<br>
-Bibliotecas pwebio, pandas, sqlalchemy e nest_asyncio.<br>
+Bibliotecas pywebio, pandas, sqlalchemy e nest_asyncio.<br>
 
 ## Comentários:
 Esse projeto é um teste de utilização da biblioteca pywebio (https://pywebio.readthedocs.io/en/latest/), que facilita a construção de uma interface, porque basta codificar tudo em python. A biblioteca gera o html e faz o papel de "servidor" entre o python e o navegador web.<br>

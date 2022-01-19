@@ -22,7 +22,7 @@ Bibliotecas pwebio, pandas, sqlalchemy, nest_asyncio e webbrowser.<br>
 Esse projeto é um teste de utilização da biblioteca pywebio (https://pywebio.readthedocs.io/en/latest/), que facilita a construção de uma interface, porque basta codificar tudo em python. A biblioteca gera o html e faz o papel de "servidor" entre o python e o navegador web.<br>
 
 ## Outras referências:
-Projeto para visualizar os relacionamentos de sócios e de empresas de forma gráfica: https://github.com/rictom/rede-cnpj;
+Projeto para visualizar os relacionamentos de sócios e de empresas de forma gráfica: https://github.com/rictom/rede-cnpj;<br>
 Carregar os dados de cnpjs para o banco de dados MYSQL: https://github.com/rictom/cnpj-mysql.<br>
 
 ## Histórico de versões

@@ -1,7 +1,7 @@
 # cnpj_consulta
 Rotina simples em python para consultar cnpj a partir da base de dados públicos da Receita Federal.
 
-Baixe o arquivo cnpj.db em https://www.mediafire.com/folder/1vdqoa2mk0fu9/cnpj-sqlite (base da SRF de 8/1/2022), que é a base de cnpjs em formato SQLITE tratada pelo projeto https://github.com/rictom/cnpj-sqlite.
+Primeiro gere o arquivo sqlite com a base de cnpjs utilizando o projeto https://github.com/rictom/cnpj-sqlite.
 
 O arquivo cnpj.db deve estar na mesma pasta que o cnpj_consulta_simples.py. Para executar, digite
 

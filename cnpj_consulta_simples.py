@@ -69,7 +69,7 @@ def consulta():
     df.set_index('cnpj', inplace=True)
     if df.shape[0]:
         pyout.put_html("<b>Dados da empresa:</b>")
-        df.drop(columns=['cnpj_basico', 'cnpj_ordem', 'cnpj_dv'], inplace=True)
+        #df.drop(columns=['cnpj_basico', 'cnpj_ordem', 'cnpj_dv'], inplace=True)
         #print(df)
         thtml = ''' <div  style="width: 100%;text-align:left;">'''+df.T.to_html()+'''</div>''' + thtml
         pyout.put_html(thtml)

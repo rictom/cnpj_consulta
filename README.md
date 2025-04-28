@@ -1,10 +1,18 @@
 # Consulta CNPJ Listas
 Rotina para gerar listas de cnpjs a partir da base de dados públicos da Receita Federal.
+Este programa utiliza uma base local em sqlite, que deve ser gerada utilizando o projeto https://github.com/rictom/cnpj-sqlite ou pelo programa <b>Rede_Cria_Tabelas</b>.
 
-Primeiro gere o arquivo sqlite com a base de cnpjs utilizando o projeto https://github.com/rictom/cnpj-sqlite. O arquivo cnpj.db terá cerca de 35 GB e deve estar na mesma pasta que o cnpj_listas.py. É recomendável criar um ambiente para rodar o projeto, siga as orientações em https://docs.python.org/pt-br/3/library/venv.html
+## Requisitos
+Como a base ocupa bastante espaço, é recomendável ter 100GB de SSD disponível como disco principal no computador, bem como 16GB de memória RAM.
 
-Dentro de um ambiente python, para instalar as bibliotecas utilizadas, rode
-pip install -r requirements.txt
+## Versão Executável
+Uma versão executável está na pasta <b>apps</b> deste repositório. Foi gerado pela biblioteca pyinstaller e testado em Windows 10. Para gerar o arquivo cnpj.db, baixe o programa <b>Rede_Cria_Tabelas</b> disponível em https://www.redecnpj.com.br/rede/pag/aplicativo.html?src=gh e execute as partes 1 e 2 desse programa (baixar as bases e gerar a base cnpj.db).
+
+## Versão Python
+É recomendável criar um ambiente para rodar o projeto, siga as orientações em https://docs.python.org/pt-br/3/library/venv.html. O arquivo cnpj.db deve estar na mesma pasta que o script cnpj_listas.py. 
+
+No console, dentro de um ambiente python, para instalar as bibliotecas utilizadas, rode
+<b>pip install -r requirements.txt</b>
 
 Para executar o script para gerar listas, digite
 

@@ -57,7 +57,9 @@ Bibliotecas pywebio, pandas, sqlalchemy e nest_asyncio.<br>
 
 ## Comentários:
 Esse projeto é utiliza a biblioteca pywebio (https://pywebio.readthedocs.io/en/latest/), que facilita a construção de uma interface mínima em python.
-Em caso de erros, dúvidas ou sugestões, abra uma issue neste repositório.
+
+## Dificuldades:
+Em caso de erros, dúvidas ou sugestões, abra uma issue (https://github.com/rictom/cnpj_consulta/issues) neste repositório.
 
 ## Outras referências:
 Projeto para visualizar os relacionamentos de sócios e de empresas de forma gráfica: https://github.com/rictom/rede-cnpj;<br>

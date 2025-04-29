@@ -1,6 +1,6 @@
 # Consulta CNPJ Listas
 Rotina para gerar listas de cnpjs a partir da base de dados públicos da Receita Federal.
-Este programa utiliza uma base local em sqlite, que deve ser gerada utilizando o projeto https://github.com/rictom/cnpj-sqlite ou pelo programa <b>Rede_Cria_Tabelas</b>.
+Este programa utiliza uma base local em sqlite <b>cnpj.db</b>, que deve ser gerada utilizando o projeto https://github.com/rictom/cnpj-sqlite ou pelo programa <b>Rede_Cria_Tabelas</b>.
 
 ## Dados públicos de CNPJs no site da Receita:
 Os arquivos csv zipados com os dados de CNPJs estão disponíveis em https://dados.gov.br/dados/conjuntos-dados/cadastro-nacional-da-pessoa-juridica---cnpj ou https://arquivos.receitafederal.gov.br/cnpj/dados_abertos_cnpj/<br>

@@ -54,9 +54,11 @@ Lembre-se que a base tem mais de 60 milhões de empresas, então dependendo dos 
 ## Pré-requisitos:
 Python 3.12;<br>
 Bibliotecas pywebio, pandas, sqlalchemy e nest_asyncio.<br>
-
-## Comentários:
 Esse projeto é utiliza a biblioteca pywebio (https://pywebio.readthedocs.io/en/latest/), que facilita a construção de uma interface mínima em python.
+
+## DOE!:
+Se o projeto for útil, faça uma doação para a Paróquia do Padre Júlio Lancelotti:
+https://www.oarcanjo.net/site/doe/
 
 ## Dificuldades:
 Em caso de erros, dúvidas ou sugestões, abra uma issue (https://github.com/rictom/cnpj_consulta/issues) neste repositório.

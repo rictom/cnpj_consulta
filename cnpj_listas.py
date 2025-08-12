@@ -3,12 +3,14 @@
 Created on Tue Jan 18 00:51:40 2022
 
 @author: rictom
-https://github.com/rictom/cnpj_listas
+https://github.com/rictom/cnpj_consulta
 utiliza a base de cnpjs com dados abertos da Receita, utilizando o script em https://github.com/rictom/cnpj-sqlite
 
 Ao executar o script pela primeira vez, vai adicionar outros índices que não estão na base sqlite cnpj.db
+ago/2025 - inclusão de sócios na planilha Excel, opção para filtrar por bairro ou telefone celular
+"""
 
-
+"""
 --mostrar tabelas e indices
 select * from sqlite_schema
 
@@ -105,6 +107,7 @@ def verificaIndices():
     else:
         lsql = []
         pyout.put_text('Faltam colunas para ser indexadas:', sdiff)
+        pyout.put_text('A operação de criação de índices será realizada agora e pode levar horas... Aguarde!')
         for tabela, d in dtabelas_colunasQueDevemEstarIndexadas.items():
             for c in sdiff:
                 if c in d:
@@ -148,10 +151,10 @@ def verificaTabelas():
         CREATE INDEX idx_cnaes_estabelecimentos_tipo_cnae ON cnaes_estabelecimentos(tipo_cnae);
         '''
     if 'cnaes_estabelecimentos' not in lista_tabelas:
-        pyout.put_text(time.asctime(), 'Criando tabela cnaes:')
+        pyout.put_text(time.asctime(), 'Criando tabela cnae secundária:')
         with contextlib.closing(sqlite3.connect(caminhoDBReceita)) as engine, engine: # as engine,engine para fechar a conexão e dar commit
             engine.executescript(sqlcnaes)
-        pyout.put_text(time.asctime(), 'Criando tabela cnaes-fim')
+        pyout.put_text(time.asctime(), 'Criando tabela cnae secundária-fim')
     if 'tporte' not in lista_tabelas:
         pyout.put_text(time.asctime(), 'Criando tabela tporte:')
         with contextlib.closing(sqlite3.connect(caminhoDBReceita)) as engine, engine: # as engine,engine para fechar a conexão e dar commit
@@ -205,6 +208,7 @@ def sqlWhereF(dados):
         inUF = dados['uf']
         inMunicipio = [k.split('-')[-1].strip() for k in dados['municipio']]
         inCEP = [k.strip() for k in  dados['cep'].replace('-','').split(' ') if k.strip()]
+        inBairro = [k.strip() for k in  dados['bairro'].strip().split(';') if k.strip()]
         inNatJur = [k.split('-')[0].strip() for k in dados['natureza_juridica']]
         inCnae = [k.split('-')[0].strip() for k in dados['cnae_principal']]
         inSituacao = [k.split('-')[0].strip() for k in dados['situacao_cadastral']]
@@ -229,21 +233,30 @@ def sqlWhereF(dados):
         
         for lista, coluna in [(inUF, 't.UF'), (inMunicipio, 't.municipio'), (inNatJur, 'te.natureza_juridica'),
                               (inSituacao, 't.situacao_cadastral'), (inPorte, 'te.porte_empresa'), 
-                              (inCEP, 't.cep'), (inCnae, 't.cnae_fiscal'),
+                              (inCEP, 't.cep'), 
+                              (inBairro, 't.bairro'),
+                              (inCnae, 't.cnae_fiscal'),
                               (inSimples, 'ts.opcao_simples'), (inMei, 'ts.opcao_mei')]:
             if lista:
                 if sqlwhere: 
                     sqlwhere += ' AND '
                 if coluna=='t.cnae_fiscal' and dados['bcnae_secundaria']:
                     coluna = 'cnaes_estabelecimentos.cnae'
-                sqlwhere += coluna + ' in (' + ' ?, '*(len(lista)-1) + '? ) '
+                if coluna !='t.bairro':
+                    sqlwhere += coluna + ' in (' + ' ?, '*(len(lista)-1) + '? ) '
+                else:
+                    if len(lista)==1:
+                        sqlwhere += '(' + coluna + ' like ? ) '
+                    else:
+                        sqlwhere += '(' + ('( trim(t.bairro) like ? ) OR ') *(len(lista)-1) + ' (trim(t.bairro) like ? ) )'
                 inLista += lista
         if sqlwhere:
             if inCnae and dados['bcnae_secundaria']:
                 sqlwhere = ''' LEFT JOIN cnaes_estabelecimentos on cnaes_estabelecimentos.cnpj=t.cnpj WHERE ''' + sqlwhere
             else:
                 sqlwhere = 'WHERE ' + sqlwhere
-            
+            if dados['bcelular']:
+                sqlwhere += " AND (substr(trim(t.telefone1), 1,1) in ('6','7','8','9') or substr(trim(t.telefone2), 1,1) in ('6','7','8','9') or substr(trim(t.fax), 1,1) in ('6','7','8','9')) "
             sqlwhere += ' LIMIT ?'
             if dados['action']=='consulta':
                 #sqllimit = ' LIMIT ' + str(dados['klimiteTela'])
@@ -253,6 +266,30 @@ def sqlWhereF(dados):
                 inLista.append(dados['klimiteExcel'])
     return sqlwhere, inLista
 #.def sqlWhereF
+
+def sqlSociosF(inLista):
+    querySocios = '''
+        SELECT t.cnpj, te.razao_social, t.cnpj_cpf_socio, t.nome_socio, sq.descricao as cod_qualificacao, 
+            t.data_entrada_sociedade, t.pais, tpais.descricao as pais_, t.representante_legal, t.nome_representante, t.qualificacao_representante_legal, sq2.descricao as qualificacao_representante_legal_, t.faixa_etaria
+        --FROM estabelecimento tt       
+        --left join socios t on tt.cnpj=t.cnpj
+        FROM socios t 
+        LEFT JOIN estabelecimento tt on tt.cnpj=t.cnpj
+        LEFT JOIN empresas te on te.cnpj_basico=tt.cnpj_basico
+        LEFT JOIN qualificacao_socio sq ON sq.codigo=t.qualificacao_socio
+        LEFT JOIN qualificacao_socio sq2 ON sq2.codigo=t.qualificacao_representante_legal
+        left join pais tpais on tpais.codigo=t.pais
+        where 
+    '''
+
+    if len(inLista)==1:
+        querySocios += 'tt.cnpj=?'
+    else:
+        querySocios += 'tt.cnpj in ('
+        querySocios += ' ?, '*(len(inLista)-1) + '? )'
+    querySocios+= ' ORDER BY tt.cnpj, t.nome_socio '
+    return querySocios
+#.def sqlSociosF
 
 dados = {}
 def consulta(): #retorna None se for para finalizar
@@ -273,8 +310,9 @@ def consulta(): #retorna None se for para finalizar
              #pyin.input("Razão Social", name="razao_social", type=pyin.TEXT, value=''),
              #pyin.input("Nome Fantasia", name="nome_fantasia", type=pyin.TEXT, value=''),
              pyin.select("UF", options=listaUFs, name="uf", multiple=True, value=dados.get('uf',''), help_text='Selecione 1 ou mais UFs. Os campos permitem múltipla seleção, com CTRL (ou Command) + Clique. Os critérios podem ser combinados, por exemplo, Municipio e CNAE'),
-             pyin.select("Município", options=listaMunicipios, name="municipio", multiple=True, value=dados.get('municipio',''), help_text="Para localizar um município, faça a busca pelo navegador com CTRL ( ouCmd) + F"),
-             pyin.input("CEP",  name="cep",  type=pyin.TEXT, value=dados.get('cep',''), help_text="Utilize apenas oito dígitos, por exemplo: 12345678"),
+             pyin.select("Município", options=listaMunicipios, name="municipio", multiple=True, value=dados.get('municipio',''), help_text="Para localizar um município, faça a busca pelo navegador com CTRL (ou Cmd) + F"),
+             pyin.input("CEP",  name="cep",  type=pyin.TEXT, value=dados.get('cep',''), help_text="Utilize apenas oito dígitos, sem hífe, por exemplo: 12345678"),
+             pyin.input("Bairro",  name="bairro",  type=pyin.TEXT, value=dados.get('bairro',''), help_text="Para usar esta opção, é necessário informar o município ou CEP. Se for apenas parte do nome, utilize % como curinga. Coloque os nomes dos Bairros separados por ; "),
              pyin.select("Natureza Jurídica", options=listaNatJur, name="natureza_juridica", multiple=True, value=dados.get('natureza_juridica','') ),
              pyin.select("CNAE Principal", options=listaCnae, name="cnae_principal",  multiple=True, value=dados.get('cnae_principal','')),
              pyin.checkbox("CNAE Secundária", options=['Busca também em cnae secundária'], name="bcnae_secundaria", value=dados.get('bcnae_secundaria',False)),
@@ -286,6 +324,8 @@ def consulta(): #retorna None se for para finalizar
              pyin.input("Data Início Atividades Posterior ou igual que (Formato AAAAMMDD):", name="data_inicio_atividades_maior", type=pyin.TEXT, value=dados.get('data_inicio_atividades_maior', '')),
              pyin.input("Capital Social MENOR ou IGUAL que:", name="capital_social_menor", type=pyin.FLOAT, value=dados.get('capital_social_menor', None)),
              pyin.input("Capital Social MAIOR ou IGUAL que:", name="capital_social_maior", type=pyin.FLOAT, value=dados.get('capital_social_maior', None)),
+             pyin.checkbox("", options=['Selecionar apenas empresas com telefones iniciando com 6, 7, 8 ou 9 (possível celular)'], name="bcelular", value=dados.get('bcelular',False)),
+             pyin.checkbox("", options=['Dados de Sócios na planilha Excel'], name="bsocios", value=dados.get('bsocios',True), help_text='Os sócios aparecerão relacionados apenas às Matrizes das empresas.'),
              pyin.input("Limite de Registros na Tela:", name="klimiteTela", type=pyin.NUMBER, value=dados.get('klimiteTela', 10)),
              pyin.input("Limite de Registros para Exportar para o Excel:", name="klimiteExcel", type=pyin.NUMBER, value=dados.get('klimiteExcel', 1000)),
              pyin.actions('', [ #'texto acima do grupo de botões'
@@ -379,6 +419,15 @@ def consulta(): #retorna None se for para finalizar
     with pyout.put_loading():
         with contextlib.closing(sqlite3.connect(caminhoDBReceita)) as engine:
             df = pd.read_sql(sql + sqlwhere, params=tuple(inLista), con=engine, index_col=None)
+            if dados.get('bsocios'):
+                listaCNPJs = df['cnpj'].tolist()
+                querySocios = sqlSociosF(listaCNPJs)
+                print('sql sócios:\n' + querySocios)
+                print(listaCNPJs)
+                dfsocios = pd.read_sql(querySocios, params=tuple(listaCNPJs), con=engine, index_col=None)
+            # print(querySocios)
+            # print(inLista)
+            # print(dfsocios)
     print(time.asctime(), 'Executando sql -fim.')
     df['cnae_fiscal'] = df['cnae_fiscal'].apply(ajustaCnaes)
     df['cnae_fiscal_secundaria'] = df['cnae_fiscal_secundaria'].apply(ajustaCnaes)
@@ -407,10 +456,20 @@ def consulta(): #retorna None se for para finalizar
             with pyout.put_loading():
                 with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                     k = 0
+                    pyout.put_text(time.asctime(), "Abas de dados cadastrais...")
                     for start in range(0, df.shape[0], limiteLinhasExcel):
                         df_subset = df.iloc[start:start + limiteLinhasExcel]
                         df_subset.to_excel(writer, startrow = 0, merge_cells = False, sheet_name = f"dados_{k+1}" , index=False, freeze_panes=(1,0))
                         k += 1
+                    
+                    if dados.get('bsocios'):
+                        ks = 0
+                        pyout.put_text(time.asctime(), "Abas de dados de sócios...")
+                        for start in range(0, dfsocios.shape[0], limiteLinhasExcel):
+                            dfsocios_subset = dfsocios.iloc[start:start + limiteLinhasExcel]
+                            dfsocios_subset.to_excel(writer, startrow = 0, merge_cells = False, sheet_name = f"socios_{ks+1}" , index=False, freeze_panes=(1,0))
+                            ks += 1                        
+                        
                     #pyout.put_text('Parâmetros da consulta: ', parametrosDaConsulta)
                     parametrosDaConsulta['Referência Base CNPJ'] = data_referencia_base
                     dfref = pd.DataFrame(list(parametrosDaConsulta.items()), columns=['parâmetro', 'valor'])   
@@ -468,6 +527,7 @@ if __name__ == '__main__':
     if getattr(sys, 'frozen', False):
        webbrowser.open('https://www.oarcanjo.net/site/doe/')
     porta = config['ETC'].getint('porta',8011)
+    print('o aplicativo pode ser acessado pelo navegador no endereço: ' + f'http://localhost:{porta}')
     webbrowser.open(f'http://localhost:{porta}', new=0, autoraise=True) 
     pywebio.start_server(app, host='0.0.0.0', port=porta)
     #app()

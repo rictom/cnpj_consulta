@@ -11,8 +11,6 @@ Como a base ocupa bastante espaço, é recomendável ter 100GB de SSD disponíve
 ## Versão Executável
 Uma versão executável está na pasta <b>apps</b> deste repositório. Foi gerado pela biblioteca pyinstaller e testado em Windows 10. Para gerar o arquivo cnpj.db, baixe o programa <b>Rede_Cria_Tabelas</b> disponível em https://www.redecnpj.com.br/rede/pag/aplicativo.html?src=gh e execute as partes 1 e 2 desse programa (baixar as bases e gerar a base cnpj.db). Descompacte o arquivo <b>cnpj_listas.win.zip</b> e salve o arquivo <b>cnpj.db</b> na mesma pasta que <b>cnpj_listas.exe</b>. Para executar, clique duas vezes no .exe.
 
-## Versão Executável com base de julho/2025
-Uma versão executável com a base em sqlite já preparada está disponível em https://www.mediafire.com/folder/1u5zd4nov7bfs/cnpj_consulta. 
 
 ## Versão Python
 É recomendável criar um ambiente para rodar o projeto, siga as orientações em https://docs.python.org/pt-br/3/library/venv.html. O arquivo cnpj.db deve estar na mesma pasta que o script cnpj_listas.py. 

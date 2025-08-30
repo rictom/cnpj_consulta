@@ -69,6 +69,10 @@ Projeto para visualizar os relacionamentos de sócios e de empresas de forma gr�
 Carregar os dados de cnpjs para o banco de dados MYSQL: https://github.com/rictom/cnpj-mysql.<br>
 
 ## Histórico de versões
+versão 0.3 (agosto/2025)
+- filtro por bairro;
+- exportação de dados de sócios na planilha.
+
 versão 0.2 (abril/2025)
 - opção para exportar listas
 

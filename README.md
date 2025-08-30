@@ -1,10 +1,22 @@
 # Consulta CNPJ Listas
 Rotina para gerar listas de cnpjs a partir da base de dados públicos da Receita Federal.
+Este programa utiliza uma base local em sqlite <b>cnpj.db</b>, que deve ser gerada utilizando o projeto https://github.com/rictom/cnpj-sqlite ou pelo programa <b>Rede_Cria_Tabelas</b>.
 
-Primeiro gere o arquivo sqlite com a base de cnpjs utilizando o projeto https://github.com/rictom/cnpj-sqlite. O arquivo cnpj.db terá cerca de 35 GB e deve estar na mesma pasta que o cnpj_listas.py. É recomendável criar um ambiente para rodar o projeto, siga as orientações em https://docs.python.org/pt-br/3/library/venv.html
+## Dados públicos de CNPJs no site da Receita:
+Os arquivos csv zipados com os dados de CNPJs estão disponíveis em https://dados.gov.br/dados/conjuntos-dados/cadastro-nacional-da-pessoa-juridica---cnpj ou https://arquivos.receitafederal.gov.br/dados/cnpj/dados_abertos_cnpj/<br>
 
-Dentro de um ambiente python, para instalar as bibliotecas utilizadas, rode
-pip install -r requirements.txt
+## Requisitos
+Como a base ocupa bastante espaço, é recomendável ter 100GB de SSD disponível como disco principal no computador, bem como 16GB de memória RAM.
+
+## Versão Executável
+Uma versão executável está na pasta <b>apps</b> deste repositório. Foi gerado pela biblioteca pyinstaller e testado em Windows 10. Para gerar o arquivo cnpj.db, baixe o programa <b>Rede_Cria_Tabelas</b> disponível em https://www.redecnpj.com.br/rede/pag/aplicativo.html?src=gh e execute as partes 1 e 2 desse programa (baixar as bases e gerar a base cnpj.db). Descompacte o arquivo <b>cnpj_listas.win.zip</b> e salve o arquivo <b>cnpj.db</b> na mesma pasta que <b>cnpj_listas.exe</b>. Para executar, clique duas vezes no .exe.
+
+
+## Versão Python
+É recomendável criar um ambiente para rodar o projeto, siga as orientações em https://docs.python.org/pt-br/3/library/venv.html. O arquivo cnpj.db deve estar na mesma pasta que o script cnpj_listas.py. 
+
+No console, dentro de um ambiente python, para instalar as bibliotecas utilizadas, rode
+<b>pip install -r requirements.txt</b>
 
 Para executar o script para gerar listas, digite
 
@@ -43,10 +55,14 @@ Lembre-se que a base tem mais de 60 milhões de empresas, então dependendo dos 
 ## Pré-requisitos:
 Python 3.12;<br>
 Bibliotecas pywebio, pandas, sqlalchemy e nest_asyncio.<br>
+A biblioteca pywebio (https://pywebio.readthedocs.io/en/latest/) facilita a construção de uma interface mínima em python.
 
-## Comentários:
-Esse projeto é utiliza a biblioteca pywebio (https://pywebio.readthedocs.io/en/latest/), que facilita a construção de uma interface mínima em python.
-Em caso de erros, dúvidas ou sugestões, abra uma issue neste repositório.
+## DOE!:
+Se o projeto for útil, faça uma doação para a Paróquia do Padre Júlio Lancelotti:
+https://www.oarcanjo.net/site/doe/
+
+## Dificuldades:
+Em caso de erros, dúvidas ou sugestões, abra uma issue (https://github.com/rictom/cnpj_consulta/issues) neste repositório.
 
 ## Outras referências:
 Projeto para visualizar os relacionamentos de sócios e de empresas de forma gráfica: https://github.com/rictom/rede-cnpj;<br>

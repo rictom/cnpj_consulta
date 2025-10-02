@@ -9,7 +9,7 @@ Os arquivos csv zipados com os dados de CNPJs estão disponíveis em https://dad
 Como a base ocupa bastante espaço, é recomendável ter 100GB de SSD disponível como disco principal no computador, bem como 16GB de memória RAM.
 
 ## Versão Executável
-Uma versão executável está na pasta <b>apps</b> deste repositório. Foi gerado pela biblioteca pyinstaller e testado em Windows 10. Para gerar o arquivo cnpj.db, baixe o programa <b>Rede_Cria_Tabelas</b> disponível em https://www.redecnpj.com.br/rede/pag/aplicativo.html?src=gh e execute as partes 1 e 2 desse programa (baixar as bases e gerar a base cnpj.db). Descompacte o arquivo <b>cnpj_listas.win.zip</b> e salve o arquivo <b>cnpj.db</b> na mesma pasta que <b>cnpj_listas.exe</b>. Para executar, clique duas vezes no .exe.
+Uma versão executável está na pasta <b>apps</b> deste repositório. Foi gerado pela biblioteca pyinstaller e testado em Windows 10. Para gerar o arquivo cnpj.db, baixe o programa <b>Rede_Cria_Tabelas</b> disponível em [https://www.redecnpj.com.br/rede/pag/aplicativo.html](https://www.redecnpj.com.br/rede/pag/aplicativo.html#rede_programa_baixar) e execute as partes 1 e 2 desse programa (baixar as bases e gerar a base cnpj.db). Descompacte o arquivo <b>cnpj_listas.win.zip</b> e salve o arquivo <b>cnpj.db</b> na mesma pasta que <b>cnpj_listas.exe</b>. Para executar, clique duas vezes no .exe.
 
 
 ## Versão Python

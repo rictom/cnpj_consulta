@@ -65,8 +65,9 @@ https://www.oarcanjo.net/site/doe/
 Em caso de erros, dúvidas ou sugestões, abra uma issue (https://github.com/rictom/cnpj_consulta/issues) neste repositório.
 
 ## Outras referências:
-Projeto para visualizar os relacionamentos de sócios e de empresas de forma gráfica: https://github.com/rictom/rede-cnpj;<br>
-Carregar os dados de cnpjs para o banco de dados MYSQL: https://github.com/rictom/cnpj-mysql.<br>
+Projeto para visualizar os relacionamentos de sócios e de empresas de forma gráfica: https://github.com/rictom/rede-cnpj<br>
+Para fazer consultas de empresas por api em python: https://github.com/rictom/cnpj_api<br>
+Carregar os dados de cnpjs para o banco de dados MYSQL: https://github.com/rictom/cnpj-mysql<br>
 
 ## Histórico de versões
 versão 0.3 (agosto/2025)
